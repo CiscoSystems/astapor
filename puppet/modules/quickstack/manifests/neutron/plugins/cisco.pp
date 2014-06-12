@@ -75,22 +75,6 @@ class quickstack::neutron::plugins::cisco (
     }
   }
 
-#  if $cisco_nexus_plugin == 'neutron.plugins.cisco.nexus.cisco_nexus_plugin_v2.NexusPlugin' {
-#    if $cisco_vswitch_plugin != 'neutron.plugins.cisco.n1kv.n1kv_neutron_plugin.N1kvNeutronPluginV2' {
-#      # nexus plugin, setup necessary dependencies and config files"
-#      package { 'python-ncclient':
-#        ensure => installed,
-#      } ~> Service['neutron-server']
-
-#      Neutron_plugin_cisco<||> ->
-#      file {'/etc/neutron/plugins/cisco/cisco_plugins.ini':
-#        owner => 'root',
-#        group => 'root',
-#        content => template('quickstack/cisco_plugins.ini.erb')
-#      } ~> Service['neutron-server']
-#    }
-#  }
-
   if $nexus_credentials {
     file {'/var/lib/neutron/.ssh':
       ensure => directory,
@@ -113,7 +97,7 @@ class quickstack::neutron::plugins::cisco (
         baseurl   => $n1kv_supplemental_repo,
         descr     => "Internal repo for Foreman",
         enabled   => 1,
-        priority  => 90,
+        priority  => 1,
         gpgcheck  => 1,
         proxy     => $proxy_url,
         gpgkey    => "${n1kv_supplemental_repo}/RPM-GPG-KEY",
@@ -130,7 +114,7 @@ class quickstack::neutron::plugins::cisco (
         baseurl   => $n1kv_supplemental_repo,
         descr     => "Internal repo for Foreman",
         enabled   => 1,
-        priority  => 90,
+        priority  => 1,
         gpgcheck  => 0,
       }
     }
@@ -171,6 +155,17 @@ class quickstack::neutron::plugins::cisco (
     } ~> Service['neutron-server']
 
   } else {
+    package { 'python-ncclient':
+      ensure => installed,
+    } ~> Service['neutron-server']
+
+    Neutron_plugin_cisco<||> ->
+    file {'/etc/neutron/plugins/cisco/cisco_plugins.ini':
+      owner => 'root',
+      group => 'root',
+      content => template('quickstack/cisco_plugins.ini.erb')
+    } ~> Service['neutron-server']
+
     class { '::neutron::plugins::cisco':
       database_user     => $neutron_db_user,
       database_pass     => $neutron_db_password,
@@ -181,18 +176,6 @@ class quickstack::neutron::plugins::cisco (
       nexus_plugin      => $cisco_nexus_plugin
     }
   }
-
-  package { 'python-ncclient':
-    ensure => installed,
-  } ~> Service['neutron-server']
-
-  Neutron_plugin_cisco<||> ->
-  file {'/etc/neutron/plugins/cisco/cisco_plugins.ini':
-    owner => 'root',
-    group => 'root',
-    content => template('quickstack/cisco_plugins.ini.erb')
-  } ~> Service['neutron-server']
-
 }
 
 define nexus_creds {

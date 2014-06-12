@@ -68,13 +68,13 @@ class quickstack::controller_common (
   $swift_ringserver_ip           = '192.168.203.1',
   $swift_storage_ips             = ["192.168.203.2","192.168.203.3","192.168.203.4"],
   $swift_storage_device          = 'device1',
+  $support_profile               = $quickstack::params::support_profile,
   $amqp_provider                 = $quickstack::params::amqp_provider,
   $amqp_host                     = $quickstack::params::amqp_host,
   $amqp_username                 = $quickstack::params::amqp_username,
   $amqp_password                 = $quickstack::params::amqp_password,
   $verbose                       = $quickstack::params::verbose,
   $ssl                           = $quickstack::params::ssl,
-  $support_profile               = 'None',
   $freeipa                       = $quickstack::params::freeipa,
   $mysql_ca                      = $quickstack::params::mysql_ca,
   $mysql_cert                    = $quickstack::params::mysql_cert,
@@ -429,6 +429,7 @@ class quickstack::controller_common (
     horizon_ca            => $horizon_ca,
     neutron_options       => { 'profile_support' => $support_profile },
   }
+  File_line['httpd_listen_on_bind_address_80'] -> File_line['undo_httpd_listen_on_bind_address_80']
 
   class {'memcached':}
 

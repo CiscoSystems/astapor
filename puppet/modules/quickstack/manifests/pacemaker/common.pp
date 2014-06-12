@@ -47,12 +47,35 @@ class quickstack::pacemaker::common (
 ) {
   include quickstack::pacemaker::params
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 59f5c9e... sync with redhat/astapor-master
+=======
+<<<<<<< HEAD
+>>>>>>> cde2bb1... syncing with redhat repo
+=======
+>>>>>>> 3727da8... sync with latest RH
   if has_interface_with("ipaddress", map_params("cluster_control_ip")) {
     $setup_cluster = true
   } else {
     $setup_cluster = false
   }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Updating astapor for ICE HOUSE
+=======
+>>>>>>> sync with redhat/astapor-master
+>>>>>>> 59f5c9e... sync with redhat/astapor-master
+=======
+>>>>>>> 3727da8... sync with latest RH
   package {'rpcbind': } ->
   service {'rpcbind':
     enable => true,
